@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<p>
+				Ask a yes/no question:
+				<input v-model="question">
+			</p>
+			<p>{{ answer }}</p>
+		</div>
+
+		<script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
+		<script>
+			new Vue({
+				el: '#app',
+				data: {
+					question: '',
+					answer: ''
+				},
+				watch: {
+					question: function() {
+						this.answer = 'Waitting for you stop typing ...';
+						this.got();
+					}
+				},
+				created: function() {
+					this.answer = 'Please ask me ~';
+					this.got = _.debounce(this.get, 500);
+				},
+				methods: {
+					get: function() {
+						if (this.question.indexOf('?') === -1) {
+							this.answer = '?';
+							return;
+						}
+						this.answer = 'thinking ...';
+						var vm = this;
+						axios
+							.get('https://yesno.wtf/api')
+							.then(function(response) {
+								vm.answer = _.capitalize(response.data.answer);
+							})
+							.catch(function(error) {
+								vm.answer = error
+							});
+					}
+				}
+			})
+		</script>
+	</body>
+
+</html>
