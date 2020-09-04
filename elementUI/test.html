@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.13.2/lib/theme-chalk/index.min.css">
+</head>
+<body>
+<div id="app">
+    <el-table :data="tableData" stripe border>
+        <el-talbe-column type="selection"></el-talbe-column>
+        <el-table-column label="日期" prop="date"></el-table-column>
+        <el-table-column label="姓名" prop="name"></el-table-column>
+        <el-table-column label="地址" prop="address"></el-table-column>
+        <el-table-column label="地址" prop="address"></el-table-column>
+        <el-table-column label="操作">
+            <template slot-scope="scope">
+                <el-button @click.native.prevent="del(scope.$index)">del</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios@0.20.0/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/element-ui@2.13.2/lib/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mockjs@1.1.0/dist/mock.min.js"></script>
+
+<script>
+    let data = [
+        {date: Mock.mock('@datetime'), name: Mock.mock('@cname'), address: Mock.mock('@city')},
+        {date: Mock.mock('@datetime'), name: Mock.mock('@cname'), address: Mock.mock('@city')},
+        {date: Mock.mock('@datetime'), name: Mock.mock('@cname'), address: Mock.mock('@city')},
+        {date: Mock.mock('@datetime'), name: Mock.mock('@cname'), address: Mock.mock('@city')},
+        {date: Mock.mock('@datetime'), name: Mock.mock('@cname'), address: Mock.mock('@city')},
+        {date: Mock.mock('@datetime'), name: Mock.mock('@cname'), address: Mock.mock('@city')},
+        {date: Mock.mock('@datetime'), name: Mock.mock('@cname'), address: Mock.mock('@city')},
+        {date: Mock.mock('@datetime'), name: Mock.mock('@cname'), address: Mock.mock('@city')},
+    ];
+    Mock.setup({timeout: 500});
+    Mock.mock('/getTableData', 'post', data);
+    Mock.mock('/delTableData', 'post', (o) => {
+        data.splice(JSON.parse(o.body).index, 1);
+    });
+
+
+    new Vue({
+        el: '#app',
+        data: {
+            tableData: []
+        },
+        mounted: function () {
+            this.get();
+        },
+        methods: {
+            get: function () {
+                axios.post('/getTableData').then((res) => {
+                    this.tableData = res.data;
+                    console.log(this.tableData)
+                }).catch(() => {
+                });
+            },
+            del: function (index) {
+                axios.post('/delTableData', {index: index});
+                this.get();
+            }
+        }
+    })
+</script>
+</body>
+</html>

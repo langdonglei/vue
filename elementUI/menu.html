@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.13.2/lib/theme-chalk/index.min.css">
+</head>
+<body>
+<div id="app">
+    <el-container>
+        <el-header>
+            <el-row>
+                <el-col :span="10">
+                    <el-menu mode="horizontal" :default-active="'1'" @select="handleSelect">
+                        <el-menu-item index="1"><i class="el-icon-set-up"></i>选项1</el-menu-item>
+                        <el-menu-item index="2"><i class="el-icon-set-up"></i>选项2</el-menu-item>
+                        <el-menu-item index="3"><i class="el-icon-set-up"></i>选项3</el-menu-item>
+                        <el-menu-item index="4"><i class="el-icon-set-up"></i>选项4</el-menu-item>
+                        <el-menu-item index="5"><i class="el-icon-set-up"></i>选项5</el-menu-item>
+                        <el-menu-item index="6"><i class="el-icon-set-up"></i>选项6</el-menu-item>
+                    </el-menu>
+                </el-col>
+                <el-col :span="2" push="12" style="line-height:60px">
+                    <el-dropdown>
+                        <i class="el-icon-setting" style="margin-right: 15px"> 王小虎 </i>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item>查看</el-dropdown-item>
+                            <el-dropdown-item>新增</el-dropdown-item>
+                            <el-dropdown-item>删除</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                </el-col>
+            </el-row>
+        </el-header>
+
+        <el-container>
+
+
+            <el-main>
+                <el-table :data="tableData">
+                    <el-table-column prop="date" label="日期"></el-table-column>
+                    <el-table-column prop="name" label="姓名"></el-table-column>
+                    <el-table-column prop="address" label="地址"></el-table-column>
+                </el-table>
+            </el-main>
+
+        </el-container>
+
+    </el-container>
+</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuex@3.5.1/dist/vuex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue-router@3.4.3/dist/vue-router.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/element-ui@2.13.2/lib/index.min.js"></script>
+<script>
+    const item = {
+        date: '2016-05-02',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+    };
+    new Vue({
+        el: '#app',
+        data: () => {
+            return {
+                tableData: Array(20).fill(item)
+            }
+        },
+        methods: {
+            handleSelect: function (key, path) {
+                console.log(key, path);
+            }
+        }
+    })
+</script>
+</html>
