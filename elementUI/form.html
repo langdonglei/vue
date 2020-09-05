@@ -6,25 +6,30 @@
 </head>
 <body>
 <div id="app">
-    <el-form :model="formData" :rules="[]" label-width="200px">
-        <el-row>
-            <el-col :span="12">
-                <el-form-item label="姓名" prop="name">
-                    <el-input v-model="formData.name"></el-input>
-                </el-form-item>
-            </el-col>
-        </el-row>
-        <el-row>
-            <el-col :span="12">
-                <el-form-item label="年龄" prop="age">
-                    <el-input v-model="formData.age"></el-input>
-                </el-form-item>
-            </el-col>
-        </el-row>
-        <el-form-item>
-            <el-button @click="smt">确定</el-button>
-            <el-button @click="cln">取消</el-button>
+    <el-form ref="form" label-width="200px" :model="formData" :rules="rules">
+
+        <el-form-item label="姓名" prop="name" :rules="[{required:true,message:'不能为空'},{trigger:'blur',min:3,max:5,message:'必须是3-5个字符'}]">
+            <el-input v-model="formData.name"></el-input>
         </el-form-item>
+
+<!--        todo-->
+        <el-form-item label="年龄" prop="age" :rules="[{required:true,message:'不能为空'},{type:'number'},{trigger:'blur',validator(rule,value,callback){setTimeout(()=>{if(value<18){callback(new Error('18+'));}callback();},1000)}}]">
+            <el-input v-model.number="formData.age"></el-input>
+        </el-form-item>
+
+        <el-form-item label="密码" prop="pass">
+            <el-input v-model="formData.pass"></el-input>
+        </el-form-item>
+
+        <el-form-item label="确认密码" prop="checkPass">
+            <el-input v-model="formData.checkPass"></el-input>
+        </el-form-item>
+
+        <el-form-item>
+            <el-button @click="submit">确定</el-button>
+            <el-button @click="formData={}">取消</el-button>
+        </el-form-item>
+
     </el-form>
 </div>
 </body>
@@ -35,15 +40,17 @@
 <script>
     new Vue({
         data: {
-            formData: {
-                name: '',
-                age: ''
-            }
+            formData: {}
         },
         methods: {
-            smt: function () {
-            },
-            cln: function () {
+            submit() {
+                this.$refs.form.validate(valid => {
+                    if (valid) {
+                        alert('yes');
+                    } else {
+                        alert('no');
+                    }
+                });
             },
         }
     }).$mount('#app')
