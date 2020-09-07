@@ -15,8 +15,9 @@
 <script src="https://cdn.jsdelivr.net/npm/mockjs@1.1.0/dist/mock.min.js"></script>
 <script>
     new Vue({
-        el: '#app',
-        data: {}
-    })
+        data: function () {
+            return {};
+        }
+    }).$mount('#app')
 </script>
 </html>
