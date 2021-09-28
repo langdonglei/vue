@@ -1,0 +1,67 @@
+<!--$db = new PDO('mysql:host=192.168.31.6;dbname=z1', 'root', 'root');-->
+
+<!--$stmt = $db->prepare('call recentDigg(:uid)');-->
+<!--$stmt->bindValue(':uid', $_GET['uid']);-->
+<!--$stmt->execute();-->
+
+<!--echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));-->
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.1.1/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"></script>
+</head>
+<body>
+<div id="vue" style="margin-top: 50px;text-align: center">
+    <select v-model="aweme" v-on:change="getData">
+        <option v-for="aweme in awemes" v-bind:key="aweme.uid" v-bind:value="aweme">{{ aweme.remark }}</option>
+    </select>
+</div>
+<div id="echarts" style="height: 7000px"></div>
+<script>
+
+    let ec = echarts.init(document.getElementById('echarts'));
+    ec.setOption({
+        tooltip: {},
+        xAxis: {position: 'top'},
+        yAxis: {type: 'category',inverse:true},
+        series: [
+            {type: 'bar', stack: 'yes'},
+            {type: 'bar', stack: 'yes'},
+        ]
+    })
+
+    new Vue({
+        el: '#vue',
+        data: {
+            aweme: {},
+            awemes: [],
+        },
+        methods: {
+            getAwemes() {
+                return new Promise(resolve => {
+                    axios('getAwemes.php')
+                        .then(res => {
+                            this.$data.awemes = res.data
+                            this.$data.aweme = res.data[0]
+                        })
+                        .then(() => resolve())
+                })
+            },
+            getData() {
+                axios('getData.php?uid=' + this.$data.aweme.uid).then(res => ec.setOption({dataset: {source: res.data}}))
+            },
+        },
+
+        mounted() {
+            this.getAwemes().then(() => this.getData())
+        },
+    })
+
+</script>
+</body>
+</html>
